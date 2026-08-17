@@ -1,9 +1,19 @@
 import sqlite3
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional
 
 app = FastAPI(title="To-Do API")
+
+# Added to allow the html file to connect to my backend api
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 DB_FILE = "tasks.db"
 
