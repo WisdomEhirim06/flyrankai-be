@@ -65,10 +65,13 @@ def create_task(task_data: TaskCreate):
         return Task(id=row["id"], task=row["task"], done=bool(row["done"]))
 
 @app.get("/tasks", response_model=List[Task])
-def get_tasks():
+def get_tasks(done: Optional[bool] = None):
     with get_db() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT id, task, done FROM tasks")
+        if done is None:
+            cursor.execute("SELECT id, task, done FROM tasks")
+        else:
+            cursor.execute("SELECT id, task, done FROM tasks WHERE done = ?", (1 if done else 0,))
         rows = cursor.fetchall()
         return [Task(id=row["id"], task=row["task"], done=bool(row["done"])) for row in rows]
 
